@@ -5,11 +5,8 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
 
 **Alan Turinqin "Computing Machinery and Intelligence" Məqaləsinin Azərbaycan Dilinə Tərcüməsi**
-
-[🌐  • [📄 PDF Yüklə](#) • [🐛 Xəta Bildir](https://github.com/RasimAbiyev/machine.git)]
 
 </div>
 
@@ -148,9 +145,8 @@ hesablayici-masinlar-zeeka/
 │   └── <script>           # JavaScript kodu
 │
 ├── README.md              # Bu fayl
-├── LICENSE                # MIT Lisenziyası
 └── assets/                # (Opsional) Görüntü və sənədlər
-    └── .pdf   # Orijinal məqalə PDF
+    └── .pdf               # Orijinal məqalə PDF
 ```
 
 ### Fayl Məzmunu
@@ -197,34 +193,6 @@ Maşınların təlim prosesi, mükafat və cəza sistemi, uşaq maşınları kon
 
 ---
 
-## 📄 Lisenziya
-
-Bu layihə **MIT Lisenziyası** altında lisenziyalaşdırılmışdır. Ətraflı məlumat üçün [LICENSE](LICENSE) faylına baxın.
-
-```
-MIT License
-
-Copyright (c) 2025 Hesablayıcı Maşınlar və Zəka
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
 ### Orijinal Məqalə
 
 **A. M. Turing (1950)** "Computing Machinery and Intelligence." _Mind_ 49: 433-460.
@@ -242,7 +210,6 @@ Orijinal məqalə ictimai mülkdür (public domain).
 ### Təşəkkürlər
 
 - 🎓 **Alan Turing** - Orijinal məqalənin müəllifi və kompüter elminin öncüsü
-- 🌐 **all-attention.vercel.app** - Dizayn ilhamı
 - 📚 **Mind Journal** - Orijinal məqalənin nəşriyyatçısı (1950)
 - 💙 **Açıq Mənbə Cəmiyyəti** - Davamlı dəstək və töhfələr üçün
 
