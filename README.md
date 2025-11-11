@@ -81,26 +81,6 @@ http://localhost:8000
 - **Smooth Scroll**: Bölmələr arası keçidlər yumşaqdır
 - **PDF Yüklə Düyməsi**: Orijinal məqaləni PDF formatında yükləmək üçün istifadə edin
 
-### Bölmələr Arasında Gəzinti
-
-```javascript
-// Proqramatik olaraq bir bölməyə getmək üçün:
-document.querySelector('a[href="#section-id"]').click();
-```
-
-### Fərdiləşdirmə
-
-CSS dəyişənlərini redaktə edərək rəng sxemini dəyişdirə bilərsiniz:
-
-```css
-:root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --text-color: #2d3748;
-    --bg-color: #ffffff;
-    --accent-color: #667eea;
-}
-```
-
 ---
 
 ## 🛠️ Texnologiyalar və Alətlər
@@ -214,72 +194,6 @@ Diskret vəziyyətli maşınlar və universal maşınların konsepti. Charles Ba
 
 ### 7. 🎓 Öyrənən Maşınlar (Learning Machines)
 Maşınların təlim prosesi, mükafat və cəza sistemi, uşaq maşınları konsepti və gələcək perspektivlər.
-
----
-
-## 🎨 Dizayn Xüsusiyyətləri
-
-### Rəng Paleti
-
-```css
-/* Əsas Rənglər */
-Primary Gradient: #667eea → #764ba2
-Background: #ffffff
-Text: #2d3748
-Secondary: #718096
-
-/* Accent Colors */
-Hover: #5a67d8
-Link: #667eea
-Border: #e2e8f0
-```
-
-### Tipoqrafiya
-
-- **Əsas Font**: Inter (Google Fonts)
-- **Başlıqlar**: 700-800 weight
-- **Mətn**: 400 weight
-- **Line Height**: 1.6 - 1.8 (optimal oxunaqlıq)
-
-### Responsive Breakpoints
-
-```css
-/* Mobile First Yanaşması */
-Mobile: < 768px
-Tablet: 768px - 1024px
-Desktop: > 1024px
-```
-
----
-
-### Commit Mesaj Formatı
-
-```
-type(scope): subject
-
-body (opsional)
-
-footer (opsional)
-```
-
-**Tiplər:**
-- `feat`: Yeni xüsusiyyət
-- `fix`: Xəta düzəltmə
-- `docs`: Sənədləşmə
-- `style`: Kod formatı
-- `refactor`: Kod düzəltmə
-- `test`: Test əlavə etmə
-- `chore`: Ümumi işlər
-
-### Töhfə Sahələri
-
-- 🌐 **Tərcümə Təkmilləşdirmələri**: Azərbaycan dili mətnlərinin nəzərdən keçirilməsi
-- 🎨 **Dizayn Təkmilləşdirmələri**: UI/UX təkmilləşdirmələri
-- 📱 **Responsive Təkmilləşdirmələr**: Mobil təcrübə optimizasiyası
-- ♿ **Girişimlilik**: WCAG standartlarına uyğunluq
-- 📚 **Sənədləşmə**: README və kod şərhləri
-- 🐛 **Xəta Düzəltmələri**: Bug fix'lər
-- ⚡ **Performans**: Optimizasiya təkmilləşdirmələri
 
 ---
 
