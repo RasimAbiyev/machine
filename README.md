@@ -145,8 +145,9 @@ hesablayici-masinlar-zeeka/
 │   └── <script>           # JavaScript kodu
 │
 ├── README.md              # Bu fayl
+├── vercel.json            # Vercel deployment yapılandırması
 └── assets/                # (Opsional) Görüntü və sənədlər
-    └── .pdf               # Orijinal məqalə PDF
+    └── turing.pdf         # Orijinal məqalə PDF
 ```
 
 ### Fayl Məzmunu
