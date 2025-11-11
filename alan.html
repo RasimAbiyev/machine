@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesablayıcı Maşınlar və Zəka - A. M. Turing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #0f3460;
+            --highlight-color: #e94560;
+            --text-color: #eee;
+            --text-secondary: #aaa;
+            --bg-color: #0a0a0f;
+            --card-bg: rgba(26, 26, 46, 0.6);
+            --border-color: rgba(233, 69, 96, 0.2);
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, var(--primary-color) 100%);
+            color: var(--text-color);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(15, 52, 96, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.5rem 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--highlight-color);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--highlight-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--highlight-color);
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Header */
+        header {
+            margin-top: 80px;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(233, 69, 96, 0.1) 0%, transparent 100%);
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--highlight-color), #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .author {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .reference {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--highlight-color), #ff6b9d);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(233, 69, 96, 0.5);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:hover {
+            border-color: var(--highlight-color);
+            box-shadow: 0 8px 30px rgba(233, 69, 96, 0.2);
+        }
+
+        .section h2 {
+            font-size: 2rem;
+            color: var(--highlight-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: var(--text-color);
+            text-align: justify;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--highlight-color), #ff6b9d);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+            z-index: 999;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(233, 69, 96, 0.5);
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--accent-color);
+            border-top-color: var(--highlight-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+                padding-top: 1rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 2rem;
+            }
+
+            .section h2 {
+                font-size: 1.6rem;
+            }
+
+            .section p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .author {
+                font-size: 1.1rem;
+            }
+
+            header {
+                padding: 4rem 1rem 3rem;
+            }
+
+            main {
+                padding: 2rem 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .download-btn {
+                padding: 0.8rem 2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Selection Color */
+        ::selection {
+            background: var(--highlight-color);
+            color: white;
+        }
+
+        /* Smooth Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--highlight-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6b9d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="nav-title">A. M. Turing</div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#section1">Təqlid Oyunu</a></li>
+                <li><a href="#section2">Tənqid</a></li>
+                <li><a href="#section3">Maşınlar</a></li>
+                <li><a href="#section4">Rəqəmsal Kompüterlər</a></li>
+                <li><a href="#section5">Universallıq</a></li>
+                <li><a href="#section6">Əks Fikirlər</a></li>
+                <li><a href="#section7">Öyrənmə</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <h1>HESABLAYICı MAŞıNLAR VƏ ZƏKA</h1>
+            <p class="author">A. M. Turing tərəfindən</p>
+            <p class="reference">A. M. Turing (1950) Computing Machinery and Intelligence. Mind 49: 433-460.</p>
+            <a href="https://statics.fellou.ai/user-contents/turing-1762845808530.pdf" class="download-btn" download>Orijinal PDF-i Yüklə</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Section 1 -->
+        <section class="section" id="section1">
+            <h2>1. Təqlid Oyunu</h2>
+            <p>Mən "Maşınlar düşünə bilərmi?" sualını nəzərdən keçirməyi təklif edirəm. Bu, "maşın" və "düşünmək" terminlərinin mənalarının təriflərindən başlamalıdır. Təriflər sözlərin normal istifadəsini mümkün qədər əks etdirəcək şəkildə tərtib edilə bilər, lakin bu münasibət təhlükəlidir. Əgər "maşın" və "düşünmək" sözlərinin mənası onların ümumi istifadə tərzini araşdırmaqla tapılmalıdırsa, "Maşınlar düşünə bilərmi?" sualının mənası və cavabının Gallup sorğusu kimi statistik tədqiqatda axtarılmalı olduğu qənaətindən qaçmaq çətindir. Lakin bu absurddur. Belə bir tərif verməyə çalışmaq əvəzinə, mən bu sualı ona yaxın olan və nisbətən birmənalı sözlərlə ifadə olunan başqa bir sualla əvəz edəcəyəm.</p>
+            
+            <p>Problemin yeni forması "təqlid oyunu" adlandırdığımız oyun şəklində təsvir edilə bilər. Bu oyun üç nəfərlə oynanır: kişi (A), qadın (B) və istənilən cinsdən ola biləcək sorğuçu (C). Sorğuçu digər ikisindən ayrı bir otaqda qalır. Oyunun məqsədi sorğuçu üçün digər ikisindən hansının kişi və hansının qadın olduğunu müəyyənləşdirməkdir. O, onları X və Y etiketləri ilə tanıyır və oyunun sonunda ya "X A-dır və Y B-dir" ya da "X B-dir və Y A-dır" deyir. Sorğuçuya A və B-yə belə suallar vermək icazəsi verilir:</p>
+            
+            <p><strong>C:</strong> X zəhmət olmasa saçlarının uzunluğunu söyləyə bilərmi?</p>
+            
+            <p>İndi tutaq ki, X əslində A-dır, onda A cavab verməlidir. A-nın oyundakı məqsədi C-nin səhv identifikasiya etməsinə səbəb olmağa çalışmaqdır. Ona görə də onun cavabı belə ola bilər:</p>
+            
+            <p>"Mənim saçlarım qısa kəsilmişdir və ən uzun telləri təxminən doqquz düym uzunluğundadır."</p>
+            
+            <p>Səsin tonunun sorğuçuya kömək etməməsi üçün cavablar yazılı və ya daha yaxşısı maşınla yazılmış olmalıdır. İdeal variant iki otaq arasında teleprinter rabitəsidir. Alternativ olaraq suallar və cavablar vasitəçi tərəfindən təkrarlana bilər. Üçüncü oyunçunun (B) oyundakı məqsədi sorğuçuya kömək etməkdir. Onun üçün ən yaxşı strategiya çox güman ki, düzgün cavablar verməkdir. O, cavablarına "Mən qadınam, ona qulaq asmayın!" kimi şeylər əlavə edə bilər, lakin bunun heç bir faydası olmayacaq, çünki kişi də oxşar ifadələr işlədə bilər.</p>
+            
+            <p>İndi biz soruşuruq: "Bu oyunda maşın A-nın yerini tutduqda nə baş verəcək?" Sorğuçu oyun belə oynandıqda, kişi və qadın arasında oynandığı qədər tez-tez səhv qərar verəcəkmi? Bu suallar bizim orijinal "Maşınlar düşünə bilərmi?" sualımızı əvəz edir.</p>
+        </section>
+
+        <!-- Section 2 -->
+        <section class="section" id="section2">
+            <h2>2. Yeni Problemin Tənqidi</h2>
+            <p>"Bu sualın yeni formasının cavabı nədir?" deyə soruşmaqla yanaşı, "Bu yeni sual araşdırmağa layiqmi?" deyə də soruşa bilərik. Bu sonuncu sualı daha da araşdırmadan tədqiq edirik və beləliklə, sonsuz gerilənməni qısaldırıq.</p>
+            
+            <p>Yeni problem fiziki və intellektual qabiliyyətlər arasında kifayət qədər kəskin xətt çəkmək üstünlüyünə malikdir. Heç bir mühəndis və ya kimyaçı tələb olunan maddələrdən daha realist bir dəri və ət istehsal etməklə "düşünən maşın" düzəltməyə cəhd etdiyini iddia etmək istəməz. Onlar dərinin və ətin müəyyən kimyəvi xüsusiyyətlərinin mühüm olduğunu söyləyə bilərlər, lakin biz bu ehtimala tərəf götürməyəcək qədər dərəcədə şübhə edirik. Problemi "Maşınlar düşünə bilərmi?" formasında qoymaq, "Sualtı qayıqlar üzə bilərmi?" sualının oxşar formasını qoymaq qədər faydasızdır. Uyğun cavab "Sualtı qayıqlar üzə bilərmi?" sualına cavab olardı ki, "Bəli, lakin onlar bunu düz mənada edə bilməzlər."</p>
+            
+            <p>İmitasiya oyunu baxımından düşünmənin üstünlüyü ondadır ki, o, kişi və qadın arasındakı fiziki fərqlərin praktiki qeyri-əhəmiyyətli olduğunu nümayiş etdirir. Heç bir mühəndis və ya elm adamı deyə bilməz ki, "Qadınların beyin strukturu fərqlidir, ona görə də heç vaxt kişi kimi düşünə bilməzlər" və ya müəyyən mənada bunun əksi. Bu, oyunun mahiyyətini itirəcəkdir.</p>
+        </section>
+
+        <!-- Section 3 -->
+        <section class="section" id="section3">
+            <h2>3. Oyunda İştirak Edən Maşınlar</h2>
+            <p>Əvvəlki bölümdə qoyulan sualın "Mövcud rəqəmsal kompüterlərin hər hansı birini təqlid oyununda yaxşı iştirak etdirə bilərikmi?" sualı ilə əvəz edilməsi məsləhətdir. Bu suallar yuxarıdakı original suallardan nə dərəcədə fərqlidir? Orijinal sualın fiziki təzahürlərindən ayrılığın vacib olduğunu artıq göstərmişik. İndi isə məqsəd daha da genişləndirilir və yalnız müəyyən növ maşın daxil edilir. Bu məhdudlaşdırma səbəbsiz görünə bilər. Məsələn, "Yalnız rəqəmsal kompüterlər nəzərə alınmalıdır" deməklə əslində kağız ilə qələmin müəyyən istiqamətdə istifadə olunmasının rəqəmsal kompüter hesab edilə biləcəyini nəzərə almırıq. Bu, bizim təqdiqatımız üçün lazımi olmayan mühəndislik aspektlərinə fokuslanmağa gətirib çıxaracaq.</p>
+            
+            <p>"Rəqəmsal kompüter" termini ilə nə nəzərdə tutulduğunu izah etməzdən əvvəl, bu məhdudiyyətin əhəmiyyətini nəzərdən keçirək. Məhdudiyyət əvvəlcə böyük görünə bilər. Hər hansı bir müəyyən maşını təqlid etməyə qadir olan maşınlar inşa edə biləcəyimizi göstərəcəyik. Bu, prinsipial etirazlara cavab olaraq təqdim ediləcəkdir. Bu etirazlar ümumiyyətlə belə ifadə olunur: "Bəli, rəqəmsal kompüterlərin A, B, C və s. etməyə qadir olduğunu razılaşırıq, lakin heç vaxt X edə bilməzlər." Bu etirazların çoxsaylı xüsusiyyətləri var: X gözəllik qabiliyyəti, dostluq, təşəbbüs, hisslər, humor və s. ola bilər.</p>
+        </section>
+
+        <!-- Section 4 -->
+        <section class="section" id="section4">
+            <h2>4. Rəqəmsal Kompüterlər</h2>
+            <p>Rəqəmsal kompüterlərin arxasındakı ideya ümumiyyətlə insan "kompüteri" adlandırılan şəxs tərəfindən yerinə yetirilə bilən əməliyyatları yerinə yetirmək məqsədi ilə təsvir edilə bilər. Fərz edilir ki, bu kompüter müəyyən sabit qaydalara əməl edir; onun bu qaydalarda heç bir səlahiyyəti yoxdur. Bu qaydalara müvafiq olaraq o, dəyişdirə bilməsini rədd edə bilər. Biz onun dəyişməsini təmin edən bəzi qaydaların olduğunu fərz edə bilərik, lakin bu o qədər də mürəkkəb deyil. Bu, qaydalara əməl etmək qabiliyyətinin əhəmiyyətini azaltmır. O, eyni zamanda, müəyyən informasiyanın saxlanması üçün "kağız" ilə təmin olunmalıdır. Əgər o, arifmetik hesablamalar aparırsa, "iş kağızı" da ola bilər.</p>
+            
+            <p>İnsan kompüterinin apardığı hesablamalar belə bir prosesə bölünür: hər bir hərəkət o qədər sadədir ki, nə olacağı haqqında heç bir çətinlik yaranmır. Əgər xatırlatma lazımdırsa (və ya fərziyyə üzrə), baxılan anda olan məlumat iki hissəyə bölünür (bəlkə də məcazi olaraq): "dövlət yaddasının" hissəsi və "iş kağızı"nda olan hissəsi. Bunlar hər ikisi də ayrı-ayrı hərəkətlərdən əvvəl dəyişdirilə bilər.</p>
+            
+            <p>Rəqəmsal kompüterin üç hissəsi olduğu düşünülə bilər:</p>
+            
+            <p><strong>(i) Yaddaş (store)</strong><br>
+            <strong>(ii) İcraçı vahid (executive unit)</strong><br>
+            <strong>(iii) Nəzarət (control)</strong></p>
+            
+            <p>Yaddaş kağıza uyğundur, istər iş üçün istifadə olunsun, istərsə də qaydalara. İcraçı vahid fərdi əməliyyatları yerinə yetirən hissədir və nəzarət, qaydalara görə bu əməliyyatların düzgün ardıcıllıqla edilməsini təmin edir. Nəzarət "kitab qaydaları" kimi qurulmuşdur və normal olaraq onlara avtomatik şəkildə bağlıdır. İnsan kompüterində bu funksiyalar bölünməsi düzgün deyil, çünki o normalda qayda kitabını əzbərləməyə çalışır, lakin yaddaşının bir hissəsində ona yer ayırır.</p>
+        </section>
+
+        <!-- Section 5 -->
+        <section class="section" id="section5">
+            <h2>5. Rəqəmsal Kompüterlərin Universallığı</h2>
+            <p>Rəqəmsal kompüterlər "universal maşınlar" kimi xarakterizə oluna bilər. Universal rəqəmsal kompüterin mövcudluğu göstərir ki, əgər biz istənilən maşının işini təqlid etmək istəsək, onu rəqəmsal kompüterdə uyğun proqramla təqlid edə bilərik. Bu rəqəmsal kompüter kifayət qədər sürət və yaddaş qabiliyyətinə malik olmalıdır, lakin bu texniki məsələlərdir.</p>
+            
+            <p>Bu ifadə paradoksal görünə bilər. Necə ola bilər ki, bu maşınlar belə çox sayda müxtəlif növ maşını təqlid etsin? Əvvəlcə qeyd edək ki, yaddaşın həcmində və sürətdə heç bir məhdudiyyət olmadığını fərz edirik. Aydındır ki, bu şərtlər olmadan heç bir təqlid edilə bilməz.</p>
+            
+            <p>İndi isə bir rəqəmsal kompüterin başqa bir rəqəmsal kompüteri necə təqlid edə biləcəyini göstərək. Təqlid ediləcək kompüterə K adı verək və təqlid edəni H adlandıraq. K kompüterinin əməliyyatı cədvəl kimi təsvir edilə bilər. Bu cədvəl sütunları: konfiqurasiya (configuration), skan edilmiş kvadrat, əməliyyat növləri ilə birlikdə H kompüterinin yaddaşına yerləşdirilir. H, yaddaşında saxlanılan cədvələ əsasən K-nın hərəkətlərini təqlid edə bilər.</p>
+            
+            <p>Bu proses ləngiməyə səbəb olsa da, təqlid edən və təqlid edilən eyni nəticələrə gəlir. Beləliklə, universal rəqəmsal kompüter istənilən digər rəqəmsal kompüterin işini yerinə yetirə bilir. Burada yalnız sürət və yaddaş həcmi məsələləri qalır, bunlar da praktiki məsələlərdir.</p>
+        </section>
+
+        <!-- Section 6 -->
+        <section class="section" id="section6">
+            <h2>6. Əsas Suala Qarşı Fikirlər</h2>
+            <p>İndi "maşınlar düşünə bilərmi?" sualına qarşı irəli sürülən etirazları nəzərdən keçirək və bunlara cavablar verək:</p>
+            
+            <p><strong>(1) İlahi etiraz:</strong> Düşünmək insan ruhunun funksiyasıdır. Allah hər kişi və qadına ölməz ruh bəxş etmişdir, lakin heç bir heyvana və ya maşına verməmişdir. Ona görə də heç bir heyvan və ya maşın düşünə bilməz.</p>
+            
+            <p>Bu etirazı tənqid etmək üçün teoloji arqumentlərdən istifadə edə bilərik. Allah istəsəydi fillərə ruh verə bilərdi. Eynilə, Allahın istənilən vaxt maşınlara ruh verə biləcəyini söyləmək haqsızlıq olardımı? Bəzi dindar insanlar buna etiraz edə bilərlər, lakin məncə, bu, Allahın qüdrətini məhdudlaşdırmaq deməkdir.</p>
+            
+            <p><strong>(2) "Başın quma girməsi" etirazı:</strong> "Düşünən maşınların nəticələri çox dəhşətli olardı. Ümid edək ki, maşınlar düşünə bilməz."</p>
+            
+            <p>Bu, nadir hallarda açıq-aşkar ifadə olunan, lakin intellektual insanlar tərəfindən təsir göstərən etirazdır. Biz bundan məsuliyyət hissi ilə yanaşaraq kompüterlərin təhlükə törətə biləcəyini nəzərə almalıyıq, lakin bu, onların düşünə bilməyəcəyi mənasına gəlmir.</p>
+            
+            <p><strong>(3) Riyazi etiraz:</strong> Riyazi məntiqin məhdudluqlarından istifadə edilir. Gödel və digər riyaziyyatçılar göstərmişlər ki, istənilən kifayət qədər güclü hesablama sistemində həqiqət və ya yalan ola bilməyən ifadələr mövcuddur. Bu, maşınların məhdud olduğunu göstərir.</p>
+            
+            <p>Lakin insanlar da məhdudluqlara malikdir. Heç bir insan bütün riyazi həqiqətləri bilə bilməz. Maşınlar da eyni məhdudluqlara malik ola bilər.</p>
+            
+            <p><strong>(4) Şüur etirazı:</strong> "Maşın öz yazdığı sonetin gözəl olduğunu hiss edənə qədər, yaşadığı təəssüratlardan dolayı, düşüncələrindən dolayı və ya qəzəbdən, sevincdən, depressiyadan və s. təsirlənənə qədər maşınlar heç vaxt həqiqətən düşünə bilməz."</p>
+            
+            <p>Bu etiraz, solipsizm ilə bağlıdır - yalnız özümün düşündüyünü bilə bilərəm. Başqalarının düşünüb-düşünmədiyini əminliklə bilə bilmirəm. Təqlid oyunu bu problemi həll etmək üçün hazırlanmışdır.</p>
+            
+            <p><strong>(5) Müxtəlif qabiliyyətsizliklər etirazı:</strong> "Razılaşıram ki, siz maşını A, B, C və s. edə bilən şəkildə düzəldə bilərsiniz, lakin heç vaxt onu X edə bilməyəcəksiniz."</p>
+            
+            <p>X-lər arasında: mehriban olmaq, gözəl olmaq, təşəbbüs göstərmək, yumor hissi, doğru və səhvi fərqləndirmək, səhv etmək, aşiq olmaq və s. ola bilər. Bu etirazlara cavab təqlid oyununun nəticələri ilə veriləcəkdir.</p>
+            
+            <p><strong>(6) Lady Lovelace etirazı:</strong> Ada Lovelace demişdir: "Analitik Mühərrik (kompüter) heç bir şey yaratmaq iddiasında deyil. O, bizim onu etməyi bildiyimiz hər şeyi edə bilər."</p>
+            
+            <p>Bu, maşınların yalnız proqramlaşdırıldıqları şeyləri edə biləcəyini deyir. Lakin kompüterlər bəzən gözlənilməz nəticələr verə bilirlər. Proqramçı bütün nəticələri əvvəlcədən görə bilməz.</p>
+            
+            <p><strong>(7) Sinir sisteminin davamlılığı etirazı:</strong> Sinir sistemi diskret dövlət maşını deyil, davamlı sistemdir. Bu, kiçik dəyişikliklərin kiçik nəticələrə səbəb olmasını təmin edir.</p>
+            
+            <p>Lakin rəqəmsal kompüterlər davamlı sistemləri kifayət qədər yaxşı təqlid edə bilərlər.</p>
+            
+            <p><strong>(8) Qeyri-formal davranış etirazı:</strong> Hər vəziyyət üçün qaydalar yazmaq mümkün deyil. İnsan davranışı çox mürəkkəbdir.</p>
+            
+            <p>Qayda olmaması qaydalardan istifadə edilə bilməyəcəyi demək deyil. Biz sadəcə hələ bu qaydalara yiyələnməmişik.</p>
+            
+            <p><strong>(9) Ekstrasensor qavrayış etirazı (ESP):</strong> Əgər telepatiya və s. mövcuddursa, təqlid oyununu pozacaq.</p>
+            
+            <p>Bu etirazı ciddi qəbul etmək çətindir, lakin qəbul etsək belə, onu nəzərə alaraq oyunu dəyişdirə bilərik.</p>
+        </section>
+
+        <!-- Section 7 -->
+        <section class="section" id="section7">
+            <h2>7. Öyrənən Maşınlar</h2>
+            <p>Təqlid oyununda yaxşı iştirak edə biləcək maşınlar yaratmaq üçün "öyrənmə maşınları" konsepsiyasına müraciət etməliyik. İnsan uşaqlarının beyni böyüklərin beyinlərindən fərqlidir. Uşaq beyni təhsil prosesi nəticəsində böyük beynə çevrilir. Biz eyni prosesi maşınlar üçün də tətbiq edə bilərik.</p>
+            
+            <p>Uşaq proqramını təmin etmək üçün aşağıdakılar lazımdır:</p>
+            
+            <p><strong>a)</strong> Uşaq maşınının ilkin strukturu - bu, genetik materialın müəyyən etdiyi bir şeydir<br>
+            <strong>b)</strong> Təlim prosesi - bu, təcrübənin təsiridir<br>
+            <strong>c)</strong> Digər amillər - bunlar genetik materiala bənzəməyən amillərlərdir</p>
+            
+            <p>Yaxşı balans axtarmalıyıq. Əgər maşına çox böyük yaddaş qabiliyyəti verilərsə, lakin heç bir proqram verilməzsə, o, heç nə edə bilməyəcək. Əksinə, əgər ona tamamilə hazır proqram verilərsə, öyrənmə baş verməyəcək.</p>
+            
+            <p>Mənim fikrincə, ən yaxşı yol uşaq maşınını sadə qaydalarla proqramlaşdırıb onu təlim prosesinə məruz qoymaqdır. Bu, təbii təkamülə bənzər bir prosesdir:</p>
+            
+            <p>• <strong>Struktur maşını</strong> = Genetik material<br>
+            • <strong>Struktura edilən dəyişikliklər</strong> = Mutasiya<br>
+            • <strong>Təbii seçmə</strong> = Mühakimə</p>
+            
+            <p>Öyrənmə maşınının yaradılması üçün mükafat və cəza sistemindən istifadə edə bilərik. Maşın düzgün cavab verdikdə mükafatlandırılır, səhv cavab verdikdə isə cəzalandırılır. Bu, uşaq tərbiyəsinə bənzəyir.</p>
+            
+            <p>Təcrübə və səhvlər metodundan istifadə edərək, maşın öz davranışını təkmilləşdirə bilər. İlkin proqramlaşdırma sadə olmalı və maşına təcrübə yolu ilə öyrənmək imkanı verilməlidir.</p>
+            
+            <p>Məncə, yaxın gələcəkdə maşınlar təqlid oyununda iştirak edib yaxşı nəticələr əldə edə biləcəklər. 50 il ərzində maşınların yaddaş qabiliyyəti 10⁹-a çatacaq və beş dəqiqəlik oyundan sonra orta sorğuçunun düzgün identifikasiya etmə şansı 70%-dən az olacaq. Orijinal sual olan "Maşınlar düşünə bilərmi?" mənasız sayılacaq və aradan gedəcək.</p>
+            
+            <p>Gələcək nəsillər bu sahədə böyük işlər görəcəklər. Təhsil, öyrənmə prosesləri, dilin öyrənilməsi və s. sahələrdə tədqiqatlar aparılacaq. Bunlar hamısı bir-biri ilə bağlıdır və maşın zəkasının inkişafına töhfə verəcəkdir.</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 1950 A. M. Turing - Computing Machinery and Intelligence</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">Azerice tərcümə və modern web təqdimatı</p>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        // Loading Screen
+        window.addEventListener('load', () => {
+            const loading = document.getElementById('loading');
+            setTimeout(() => {
+                loading.classList.add('hidden');
+            }, 500);
+        });
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                    // Close mobile menu after click
+                    navMenu.classList.remove('active');
+                }
+            });
+        });
+
+        // Intersection Observer for Sections
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // Scroll to Top Button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Active Navigation Link
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.style.color = '';
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.style.color = 'var(--highlight-color)';
+                }
+            });
+        });
+
+        // Lazy Loading Animation
+        const fadeElements = document.querySelectorAll('.section');
+        const fadeObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        fadeElements.forEach(el => {
+            fadeObserver.observe(el);
+        });
+
+        // Parallax Effect for Background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            document.body.style.backgroundPositionY = -(scrolled * 0.3) + 'px';
+        });
+
+        // Console Easter Egg
+        console.log('%cHesablayıcı Maşınlar və Zəka', 'color: #e94560; font-size: 24px; font-weight: bold;');
+        console.log('%cA. M. Turing (1950)', 'color: #aaa; font-size: 14px;');
+        console.log('%c"Maşınlar düşünə bilərmi?"', 'color: #0f3460; font-size: 16px; font-style: italic;');
+    </script>
+
+      <script>
+        const createFloatingBall = ()=>{let a=document.createElement("style");a.textContent=`
+          .fellou-floating-ball {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background: #fff;
+              border-radius: 50%;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+              display: flex;
+              gap: 8px;
+              flex-direction: row;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              transition: all 0.15s ease;
+              z-index: 100000;
+              width: 28px;
+              height: 28px;
+              text-align: center;
+              border: 2px solid #f4f4f4;
+          }
+
+          .fellou-floating-ball:hover {
+              width: 140px;
+              border-radius: 99px;
+          }
+
+          .fellou-floating-ball svg {
+              width: 16px;
+              height: 16px;
+          }
+
+          .fellou-floating-ball-text {
+              display: none;
+              width: 0px;
+              transition: width 0.3s ease;
+              color: #595561;
+              font-size: 12px;
+              font-style: normal;
+              font-weight: 400;
+              line-height: 20px;
+              white-space: nowrap;
+              overflow: hidden;
+           
+          }
+
+          .fellou-floating-ball:hover .fellou-floating-ball-text {
+              display: block;
+              width: 100px;
+          }
+      `,document.head.appendChild(a);let b=document.createElement("div");b.className="fellou-floating-ball",b.addEventListener("click",()=>{window.open("https://fellou.ai","_blank")}),b.innerHTML=`
+          <svg width="16" height="16" viewBox="0 0 152 152" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path opacity="0.72" d="M108.71 15.909C133.671 36.8541 134.337 77.1554 110.197 105.924C86.0565 134.694 46.2518 141.036 21.2904 120.091C-3.67096 99.1459 -4.33674 58.8446 19.8034 30.0755C43.9435 1.30644 83.7482 -5.03614 108.71 15.909ZM102.282 23.5694C81.8118 6.39315 48.2407 11.7425 27.4638 36.5034C6.68694 61.2643 7.24845 95.2543 27.7183 112.431C48.1882 129.607 81.7593 124.258 102.536 99.4966C123.313 74.7357 122.752 40.7457 102.282 23.5694Z" fill="url(#paint0_linear_34_1408)"/>
+              <path d="M116.986 29.3811C141.525 49.9712 143.286 88.2698 120.921 114.924C98.5561 141.577 60.5333 146.493 35.995 125.903C11.4567 105.313 9.69493 67.0139 32.06 40.3602C54.4252 13.7065 92.4479 8.79095 116.986 29.3811ZM110.558 37.0415C90.3987 20.1255 58.6488 24.2301 39.7205 46.788C20.7921 69.346 22.2632 101.326 42.4229 118.242C62.5825 135.158 94.3324 131.054 113.261 108.496C132.189 85.9377 130.718 53.9574 110.558 37.0415Z" fill="url(#paint1_linear_34_1408)"/>
+              <path d="M131.544 35.0694C155.71 55.3471 155.731 95.1074 131.591 123.876C107.451 152.646 68.291 159.529 44.1249 139.251C19.9589 118.974 19.9379 79.2135 44.078 50.4444C68.2182 21.6753 107.378 14.7917 131.544 35.0694ZM125.116 42.7299C105.505 26.2745 72.5526 32.067 51.7385 56.8723C30.9244 81.6776 30.9421 115.136 50.5528 131.591C70.1636 148.046 103.116 142.254 123.931 117.449C144.745 92.6433 144.727 59.1852 125.116 42.7299Z" fill="url(#paint2_linear_34_1408)"/>
+              <defs>
+                  <linearGradient id="paint0_linear_34_1408" x1="108.71" y1="15.909" x2="21.2904" y2="120.091" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint1_linear_34_1408" x1="116.986" y1="29.381" x2="35.995" y2="125.903" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8" stop-opacity="0.7"/>
+                      <stop offset="0.465" stop-color="#FF9000" stop-opacity="0.42"/>
+                      <stop offset="1" stop-color="#33B3FF" stop-opacity="0.2"/>
+                  </linearGradient>
+                  <linearGradient id="paint2_linear_34_1408" x1="131.544" y1="35.0694" x2="44.1249" y2="139.251" gradientUnits="userSpaceOnUse">
+                      <stop stop-color="#6401F8"/>
+                      <stop offset="0.5" stop-color="#FF9000"/>
+                      <stop offset="1" stop-color="#33B3FF"/>
+                  </linearGradient>
+              </defs>
+          </svg>
+      `;let c=document.createElement("div");c.className="fellou-floating-ball-text",c.textContent="powered by fellou",b.appendChild(c),document.body.appendChild(b)};
+        // Call createFloatingBall when the page loads
+        window.addEventListener('load', createFloatingBall);
+      </script>
+    </body>
+</html>
